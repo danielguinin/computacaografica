@@ -6,13 +6,13 @@ import math
 
 cores = ( (1,0,0),(1,1,0),(0,1,0),(0,1,1),(0,0,1),(1,0,1),(0.5,1,1),(1,0,0.5) )
 
+n = 50
+r = 3
 
-def makeVertice():
+def makeVertice(n):
 
 	pontos = []
 
-	n = 4
-	r = 2
 	a = 2*math.pi/n
 	
 	for i in range(0,n):
@@ -23,12 +23,12 @@ def makeVertice():
 	
 	pontos += [[0,3,0]]		
 	return pontos
+
+vertices = makeVertice(n)
 		
-def makeLinhas():
+def makeLinhas(n):
 
 	pontos = []
-	
-	n = 4
 	
 	for i in range (0,n-1):
 		pontos += [[i,i+1]]
@@ -39,11 +39,10 @@ def makeLinhas():
 	
 	return pontos
 
-def makeFacesTri():
+
+def makeFacesTri(n):
 
 	pontos = []
-	
-	n = 4
 	
 	for i in range (0, n-1):
 		pontos += [[i,i+1, n]]
@@ -51,47 +50,36 @@ def makeFacesTri():
 	
 	return pontos
 
-def makeFaces():
-
-	pontos = []
-	
-	n = 4
-	
-	for i in range (0, n-1):
-		pontos += [[n]]	
-	return pontos
+facesTri = makeFacesTri(n)
 
 def Cubo():
-    glBegin(GL_QUADS)
-    i = 4
-    vertices = makeVertice()
-    faces = makeFaces()
-    for face in faces:
-        glColor3fv(cores[i])
-        for vertex in face:
-            #glColor3fv(cores[vertex])
-            glVertex3fv(vertices[vertex])
-        i = i+1
+    # vertices = makeVertice(n)
+    glBegin(GL_POLYGON)
+
+    for i in range(0, n):
+        glVertex3fv(vertices[i])
+
     glEnd()
+
     
     glBegin(GL_TRIANGLES)
     i = 0
-    facesTri = makeFacesTri()
+    # facesTri = makeFacesTri(n)
     for face in facesTri:
-        glColor3fv(cores[i])
+        glColor3fv(cores[i%len(cores)])
         for vertex in face:
             #glColor3fv(cores[vertex])
             glVertex3fv(vertices[vertex])
         i = i+1
     glEnd()
 
-    glColor3fv((0,0.5,0))
-    glBegin(GL_LINES)
-    linhas = makeLinhas()
-    for linha in linhas:
-        for vertice in linha:
-            glVertex3fv(vertices[vertice])
-    glEnd()
+    # glColor3fv((0,0.5,0))
+    # glBegin(GL_LINES)
+    # linhas = makeLinhas(n)
+    # for linha in linhas:
+    #     for vertice in linha:
+    #         glVertex3fv(vertices[vertice])
+    # glEnd()
 
 def desenha():
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
@@ -114,6 +102,6 @@ glEnable(GL_DEPTH_TEST)
 glClearColor(0.,0.,0.,1.)
 gluPerspective(45,800.0/600.0,0.1,50.0)
 glTranslatef(0.0,0.0,-8)
-#glRotatef(240,1,1,1)
+glRotatef(40,1,1,1)
 glutTimerFunc(50,timer,1)
 glutMainLoop()
