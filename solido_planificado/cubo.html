@@ -1,0 +1,127 @@
+<html>
+	<head>
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+		<script src="js/three.js"></script>
+		<script>
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+			
+			var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 500 );
+			camera.position.set( 0, -10, 5);
+			camera.lookAt( 0, 0, 0 );
+			
+			var scene = new THREE.Scene();
+			var material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
+			var quadrado = new THREE.Geometry();
+			var quadradoA = new THREE.Geometry();
+			var quadradoB = new THREE.Geometry();
+			var quadradoC = new THREE.Geometry();
+			var quadradoD = new THREE.Geometry();
+
+			
+			var a = new THREE.Vector3( -1, 1, 0);
+			var b = new THREE.Vector3( -1, 3, 0); //este aqui
+			var b2 = new THREE.Vector3( 1, 3, 0); //este aqui
+			var c = new THREE.Vector3( 1, 1, 0);
+
+			var d = new THREE.Vector3( 3, 1, 0); //este aqui
+			var d2 = new THREE.Vector3( 3, -1, 0); //este aqui
+			var e = new THREE.Vector3( 1, -1, 0);
+
+			var f = new THREE.Vector3( 1, -3, 0); //este aqui
+			var f2 = new THREE.Vector3( -1, -3, 0); //este aqui
+			var g = new THREE.Vector3( -1, -1, 0);
+
+			var h = new THREE.Vector3( -3, -1, 0); //este aqui
+			var h2 = new THREE.Vector3( -3, 1, 0); //este aqui
+			var i = new THREE.Vector3( -1, 1, 0);
+
+			var j = new THREE.Vector3( 1, 1, 0);
+			var k = new THREE.Vector3( 1, -1, 0);
+			var l = new THREE.Vector3( -1, -1, 0);
+			var m = new THREE.Vector3( -1, 1, 0);
+
+			var n = new THREE.Vector3( 0, 0, 1.936491673103708);
+			
+			quadradoA.vertices.push(a,b,b2,c);
+			quadradoB.vertices.push(c,d,d2,e);
+			quadradoC.vertices.push(e,f,f2,g);
+			quadradoD.vertices.push(g,h,h2,i);
+			
+			quadrado.vertices.push(i,j,k,l,m);
+
+			scene.add( new THREE.Line( quadrado, material ) );
+			scene.add( new THREE.Line( quadradoA, material ) );
+			scene.add( new THREE.Line( quadradoB, material ) );
+			scene.add( new THREE.Line( quadradoC, material ) );
+			scene.add( new THREE.Line( quadradoD, material ) );
+			
+			var mA = new THREE.Matrix4();
+			var mB = new THREE.Matrix4();
+			var mC = new THREE.Matrix4();
+			var mD = new THREE.Matrix4();
+
+			function atualizaMatrizes(a) {
+				var r = new THREE.Matrix4();
+				var t1 = new THREE.Matrix4();
+				var t2 = new THREE.Matrix4();
+
+				t1.makeTranslation(0,1,0);
+				r.makeRotationX(-a);
+				t2.makeTranslation(0,-1,0);
+				mA.multiplyMatrices(t1,r).multiply(t2);
+
+				t1.makeTranslation(1,0,0);
+				r.makeRotationY(a);
+				t2.makeTranslation(-1,0,0);
+				mB.multiplyMatrices(t1,r).multiply(t2);
+
+				t1.makeTranslation(0,-1,0);
+				r.makeRotationX(a);
+				t2.makeTranslation(0,1,0);
+				mC.multiplyMatrices(t1,r).multiply(t2);
+
+				t1.makeTranslation(-1,0,0);
+				r.makeRotationY(-a);
+				t2.makeTranslation(1,0,0);
+				mD.multiplyMatrices(t1,r).multiply(t2);
+			}
+
+			var anguloInicial = 0;
+			var anguloFinal = -(Math.PI/2 - 0.015);
+			var a = -0.01;
+			var angulo = anguloInicial;
+			atualizaMatrizes(a);		
+
+			function animate() {
+				
+			//console.log(angulo, anguloFinal);
+				
+				quadradoA.applyMatrix(mA);
+				quadradoB.applyMatrix(mB);
+				quadradoC.applyMatrix(mC);
+				quadradoD.applyMatrix(mD);
+				renderer.render( scene, camera );
+				if((a < 0 && angulo < anguloFinal)||(a > 0 && angulo > anguloInicial)){
+					console.log(a, angulo, anguloFinal);
+					a = -a;
+					atualizaMatrizes(a);
+				} else {
+					requestAnimationFrame( animate );
+				}
+				
+				angulo += a;
+			}
+			
+			animate();
+			
+		</script>
+	</body>
+</html>
